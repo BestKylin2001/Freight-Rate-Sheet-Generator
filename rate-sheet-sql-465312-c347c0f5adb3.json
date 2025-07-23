@@ -1,13 +1,1 @@
-{
-  "type": "service_account",
-  "project_id": "rate-sheet-sql-465312",
-  "private_key_id": "c347c0f5adb34e4c90225f172f2b4ec766dbcf60",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCVDxQRTaQcX0IM\nPQpe897T10WiNVy/Zn87WYUharre26IxxMNiKsRntqUvGog/nniFPI9FZMFWEVvY\nDfRYl+F+KEa63Btcl26BrVCO6Rb9S36LRdFw7o65+ql4bthJkLEG4CrmyQHgFdt8\nbL3CCtReN4Q5zOvfKuagz6bOhFDjPyj/qkLs6sVdfzygIQYzhqXosPQ0RkMjQIOY\nJQTXPrKiTipcpy+5xHb3waoleeKUpzsKjZtiFd4RqG5JoPP4XU+2rUxostMrt6iF\nK0jHMlssP7CoCa6Rvr9B9cbHuhsBQdrQ+0PyxUz0abfrv6cYXAVB7Tw9sgv/MQW9\no0z3+MH7AgMBAAECggEAAXyZWPmARd7WsXk5DZdlxTvOxakTQr7Kor89f7F+fv3h\nJplC0EuC5/yUtd064f+Po4HmH+1lrEPCDxacivcA2G7zEvwNCHsOLsbuwxjPZ46w\nNW1ogwrYwOwfcpm7GIi+lfCjHOgrrPOAMUPYZK4STi+ZkbCvOEDySe+oR0O0ltT6\nM+Q6eI4/bkSL3ENp/ai0AI6gpsQ22tbhwvTLSew/cEzXMPS6hWfrNVhaUXcHaTP5\neF/gRZOyQ9ON9R4ggxeblH4UOo7eU+R7l/rARaDnS6pzZz1QxsqBChvdFaW6auG2\ntGkwKg64Q9LssgKL9AwNHNlVbwRJKnuNF30eszRRkQKBgQDPzrSFwrTf7gYnFyIp\n7d9XQsKa20KaYMNZ9nizNd+ixwKARlNx3/sNk9vXr4NwVfK1vy2xpwdBAI+LYAee\necZb1aq5EYiPQTaHajyiZOJe67wi+ucNTftsrxMOH+6UKblXkwr1SiwrRHL6i+RQ\n82qjhsqQ6rCRcRGyYH7wkJOnWQKBgQC3oInEKxqeFg7me5KJ3oMEhuArHFz4Xx3C\nbu8xXatKIGAZIXRzx1aNUUViAHdX6hdXVhMHlCq+JrU78USf0dSy0/VeeyhaEmUh\n9/EIJQSPSNZsP1NynkBzn3S55C4xniweJpzspzUjTVPgYuUkTe61Ub2lktJpJxoj\n1GC6yrudcwKBgAtnACjGwj33RYcnkcxTLQoQs7TjiwgFfzKUf5L1xcuct9pqAXIi\nJBheoJV5H/EuBh9K2isBSziZ20Z+gmyDqgqn8rIs8B1MKr3LaoBOoM0siioxMjRc\nrwsLoDQKNIEUuQLBIrzK0Rmeq+BrhJ+ce6F1Z/ADsKSKW7o56T0x8aghAoGBAKsv\nFj+yj1Xg6nMjsDCnJy0JL+IAxwskYPHpyUMUN6MbG3tSHOXyZ1XG9g+ur5Ndv/TD\nYWonTtGF9F61RWxYiRlNT+mMlsmhbHaGVkVpfR62oG65emnX7e3cMU0603WeJzLU\nfGaCWp9Wb2M3zrZRkL+oPEwm29D7ivrr+mEork7RAoGAbYAEzRDwm7wvG8IV4OjW\nb993ljTXx51LcX4Nx1hGE0TSSF940p6+/RvCB5Q7sjpTazg5HEzzDrIg+mXKBMoW\nZUBSejDhcb4C5Q6qxk46TpoB1gSSOPhN9ib3U9mkO8WHtycipBeIt2OFiCkjeIKH\niHmPdGAfGFFJWt8KhoQHJW8=\n-----END PRIVATE KEY-----\n",
-  "client_email": "ratesheet-uploader@rate-sheet-sql-465312.iam.gserviceaccount.com",
-  "client_id": "102978402729521632649",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/ratesheet-uploader%40rate-sheet-sql-465312.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
+
