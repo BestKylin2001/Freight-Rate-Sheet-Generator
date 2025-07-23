@@ -2,6 +2,8 @@
 
 An automated tool for cleaning and standardizing ocean freight rate sheets with incorrect and inconsistent content, formats, and data types, using BigQuery for centralized analysis for future analysis and visulization. An automated interactive design via Streamlit for interactive access and customization data using.
 
+
+
 ## Features
 
 - **Upload & Parse Rate Sheets:** Easily upload Excel or CSV files containing ocean freight rates.
@@ -21,6 +23,9 @@ An automated tool for cleaning and standardizing ocean freight rate sheets with 
 - [Openpyxl](https://openpyxl.readthedocs.io/) – Excel file handling
 
 ## Getting Started
+
+> ⚠️ **Note:** This project is actively used with private data. Therefore, the service account JSON key is not included.  
+> You can freely replace the path with your own credentials and use your own Google BigQuery instance to achieve the same functionality.
 
 ### Prerequisites
 
