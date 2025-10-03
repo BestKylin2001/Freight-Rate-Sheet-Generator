@@ -49,12 +49,7 @@ def get_gcp_config() -> Dict[str, str]:
 @lru_cache(maxsize=1)
 def get_bq_client() -> bigquery.Client:
     cfg = get_gcp_config()
-    try:
-        info = json.loads(cfg["service_account_json"])
-    except json.JSONDecodeError:
-        # If provided as a python-ish dict string, attempt eval as last resort
-        info = eval(cfg["service_account_json"])  # noqa: S307 - trusted runtime environment
-
+    info = json.loads(cfg["service_account_json"])   # 只用 json.loads
     creds = service_account.Credentials.from_service_account_info(info)
     return bigquery.Client(project=cfg["project_id"], credentials=creds)
 
