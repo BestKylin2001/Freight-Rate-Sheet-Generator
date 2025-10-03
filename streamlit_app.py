@@ -48,10 +48,9 @@ def get_gcp_config() -> Dict[str, str]:
 
 @lru_cache(maxsize=1)
 def get_bq_client() -> bigquery.Client:
-    cfg = get_gcp_config()
-    info = json.loads(cfg["service_account_json"])   # 只用 json.loads
-    creds = service_account.Credentials.from_service_account_info(info)
-    return bigquery.Client(project=cfg["project_id"], credentials=creds)
+    gcp_secrets = st.secrets["gcp"]   # 直接拿逐项配置
+    creds = service_account.Credentials.from_service_account_info(dict(gcp_secrets))
+    return bigquery.Client(project=gcp_secrets["project_id"], credentials=creds)
 
 # ---------------------------
 # Optional Local Utilities
