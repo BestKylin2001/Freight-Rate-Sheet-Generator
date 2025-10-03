@@ -48,9 +48,23 @@ def get_gcp_config() -> Dict[str, str]:
 
 @lru_cache(maxsize=1)
 def get_bq_client() -> bigquery.Client:
-    gcp_secrets = st.secrets["gcp"]   # 直接拿逐项配置
-    creds = service_account.Credentials.from_service_account_info(dict(gcp_secrets))
-    return bigquery.Client(project=gcp_secrets["project_id"], credentials=creds)
+    gcp = st.secrets["gcp"]
+    info = {
+        "type": "service_account",
+        "project_id": gcp["project_id"],
+        "private_key_id": gcp["private_key_id"],
+        "private_key": gcp["private_key"],
+        "client_email": gcp["client_email"],
+        "client_id": gcp["client_id"],
+        "token_uri": gcp.get("token_uri", "https://oauth2.googleapis.com/token"),
+        "auth_uri": gcp.get("auth_uri", "https://accounts.google.com/o/oauth2/auth"),
+        "auth_provider_x509_cert_url": gcp.get("auth_provider_x509_cert_url", "https://www.googleapis.com/oauth2/v1/certs"),
+        "client_x509_cert_url": gcp.get("client_x509_cert_url"),
+        "universe_domain": gcp.get("universe_domain", "googleapis.com"),
+    }
+    creds = service_account.Credentials.from_service_account_info(info)
+    return bigquery.Client(project=gcp["project_id"], credentials=creds)
+
 
 # ---------------------------
 # Optional Local Utilities
