@@ -48,23 +48,15 @@ def get_gcp_config() -> Dict[str, str]:
 
 @lru_cache(maxsize=1)
 def get_bq_client() -> bigquery.Client:
-    gcp = st.secrets["gcp"]
-    info = {
-        "type": "service_account",
-        "project_id": gcp["project_id"],
-        "private_key_id": gcp["private_key_id"],
-        "private_key": gcp["private_key"],
-        "client_email": gcp["client_email"],
-        "client_id": gcp["client_id"],
-        "token_uri": gcp.get("token_uri", "https://oauth2.googleapis.com/token"),
-        "auth_uri": gcp.get("auth_uri", "https://accounts.google.com/o/oauth2/auth"),
-        "auth_provider_x509_cert_url": gcp.get("auth_provider_x509_cert_url", "https://www.googleapis.com/oauth2/v1/certs"),
-        "client_x509_cert_url": gcp.get("client_x509_cert_url"),
-        "universe_domain": gcp.get("universe_domain", "googleapis.com"),
-    }
-    creds = service_account.Credentials.from_service_account_info(info)
-    return bigquery.Client(project=gcp["project_id"], credentials=creds)
+    cfg = get_gcp_config()
+    try:
+        info = json.loads(cfg["service_account_json"])
+    except json.JSONDecodeError:
+        # If provided as a python-ish dict string, attempt eval as last resort
+        info = eval(cfg["service_account_json"])  # noqa: S307 - trusted runtime environment
 
+    creds = service_account.Credentials.from_service_account_info(info)
+    return bigquery.Client(project=cfg["project_id"], credentials=creds)
 
 # ---------------------------
 # Optional Local Utilities
@@ -96,6 +88,13 @@ def load_table(table_name):
     DATASET_NAME = "ratesheet_processing_dataset"
     query = f"SELECT * FROM `{PROJECT_ID}.{DATASET_NAME}.{table_name}`"
     return client.query(query).to_dataframe()
+
+client, table_names = get_tables_and_client()
+
+st.write("✅ Found the following rate tables in BigQuery:")
+st.write(table_names)
+
+selected_table = st.selectbox("Select a Rate Table", table_names)
 
 if selected_table:
     df = load_table(selected_table)
@@ -162,13 +161,6 @@ def get_tables_and_client():
     tables = client.list_tables(dataset)
     table_names = [t.table_id for t in tables]
     return client, table_names
-
-client, table_names = get_tables_and_client()
-
-st.write("✅ Found the following rate tables in BigQuery:")
-st.write(table_names)
-
-selected_table = st.selectbox("Select a Rate Table", table_names)
 
 # Streamlit UI
 st.title("Shipping Rates Query")
