@@ -2,6 +2,7 @@ import os
 import json
 from functools import lru_cache
 from typing import Optional, Dict
+from itertools import product
 
 import streamlit as st
 import numpy as np
@@ -24,6 +25,14 @@ def _get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
         return os.environ.get(key.upper(), default)
 
 @lru_cache(maxsize=1)
+def get_gcp_config() -> Dict[str, str]:
+    """Get GCP configuration from secrets or environment variables."""
+    return {
+        "project_id": _get_secret("project_id"),
+        "service_account_json": _get_secret("service_account_json")
+    }
+
+@lru_cache(maxsize=1)
 def get_bq_client() -> bigquery.Client:
     cfg = get_gcp_config()
     service_account_json = cfg["service_account_json"]
@@ -32,24 +41,13 @@ def get_bq_client() -> bigquery.Client:
     
     try:
         info = json.loads(service_account_json)
-    except json.JSONDecodeError as e:
-        raise RuntimeError(f"Failed to parse service_account_json: {e}")
+    except json.JSONDecodeError:
+        # If provided as a python-ish dict string, attempt eval as last resort
+        info = eval(service_account_json)  # noqa: S307 - trusted runtime environment
     
     if not isinstance(info, dict):
         raise RuntimeError("service_account_json must be a valid JSON object")
     
-    creds = service_account.Credentials.from_service_account_info(info)
-    return bigquery.Client(project=cfg["project_id"], credentials=creds)
-
-@lru_cache(maxsize=1)
-def get_bq_client() -> bigquery.Client:
-    cfg = get_gcp_config()
-    try:
-        info = json.loads(cfg["service_account_json"])
-    except json.JSONDecodeError:
-        # If provided as a python-ish dict string, attempt eval as last resort
-        info = eval(cfg["service_account_json"])  # noqa: S307 - trusted runtime environment
-
     creds = service_account.Credentials.from_service_account_info(info)
     return bigquery.Client(project=cfg["project_id"], credentials=creds)
 
@@ -70,8 +68,6 @@ def _import_utils():
             return None
 
 utils = _import_utils()
-client = get_bq_client()
-
 
 # ---------------------------
 # Query Helpers
@@ -84,6 +80,15 @@ def load_table(table_name):
     query = f"SELECT * FROM `{cfg['project_id']}.{dataset_name}.{table_name}`"
     return client.query(query).to_dataframe()
 
+@st.cache_resource
+def get_tables_and_client():
+    client = get_bq_client()
+    dataset = "ratesheet_processing_dataset"
+    tables = client.list_tables(dataset)
+    table_names = [t.table_id for t in tables]
+    return client, table_names
+
+# Initialize the client and get table names
 client, table_names = get_tables_and_client()
 
 st.write("✅ Found the following rate tables in BigQuery:")
@@ -341,3 +346,4 @@ if origin_select and destination_select and carrier_select:
 
         csv = final_selected_df.to_csv(index=False).encode("utf-8-sig")
         st.download_button("📥 下载最终选择后的总表 CSV", csv, "final_selected_routes.csv", "text/csv")
+
