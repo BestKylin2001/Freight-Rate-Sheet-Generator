@@ -2,6 +2,11 @@
 
 An automated tool for cleaning and standardizing ocean freight rate sheets with incorrect and inconsistent content, formats, and data types, using BigQuery for centralized analysis for future analysis and visulization. An automated interactive design via Streamlit for interactive access and customization data using.
 
+<img width="2141" height="1344" alt="unnamed" src="https://github.com/user-attachments/assets/8288c6b9-ba93-4de0-bad1-9c71ad83679e" />
+<img width="2150" height="1342" alt="unnamed" src="https://github.com/user-attachments/assets/0a37cfd5-e2d1-439b-8e00-1ae7a55fd280" />
+<img width="2154" height="1345" alt="unnamed" src="https://github.com/user-attachments/assets/e44858b1-41ef-46bc-9693-b93bbc0436dc" />
+<img width="2045" height="1343" alt="unnamed" src="https://github.com/user-attachments/assets/02ef3a76-7115-4cc8-97ab-aec417938bc6" />
+<img width="2154" height="1353" alt="unnamed" src="https://github.com/user-attachments/assets/3c8079c0-04f0-47ae-9e3a-76050745cc6d" />
 
 
 ## Features
