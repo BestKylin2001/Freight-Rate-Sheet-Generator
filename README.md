@@ -1,73 +1,43 @@
 # Freight Rate Sheet Generator
 
-An automated tool for cleaning and standardizing ocean freight rate sheets with incorrect and inconsistent content, formats, and data types, using BigQuery for centralized analysis for future analysis and visulization. An automated interactive design via Streamlit for interactive access and customization data using.
+This project is a rate-sheet processing pipeline that consolidates multiple Excel rate sheets with inconsistent content, formats, and data types from different agents all over the world, cleans and standardizes the data, and uploads cleaned tables into Google BigQuery for downstream analysis. 
 
-<img width="2141" height="1344" alt="unnamed" src="https://github.com/user-attachments/assets/8288c6b9-ba93-4de0-bad1-9c71ad83679e" />
-<img width="2150" height="1342" alt="unnamed" src="https://github.com/user-attachments/assets/0a37cfd5-e2d1-439b-8e00-1ae7a55fd280" />
-<img width="2154" height="1345" alt="unnamed" src="https://github.com/user-attachments/assets/e44858b1-41ef-46bc-9693-b93bbc0436dc" />
-<img width="2045" height="1343" alt="unnamed" src="https://github.com/user-attachments/assets/02ef3a76-7115-4cc8-97ab-aec417938bc6" />
-<img width="2154" height="1353" alt="unnamed" src="https://github.com/user-attachments/assets/3c8079c0-04f0-47ae-9e3a-76050745cc6d" />
+<img width="250" alt="project 1" src="https://github.com/user-attachments/assets/c5d4406a-2339-4837-8e07-29fa38ccbb4d" />
+Picture 1: Page details.
+<img width="250" alt="project 2" src="https://github.com/user-attachments/assets/a445d477-3bc8-426f-9dfa-31959540d7ab" />
+Picture 2: Select input tables to preview.
+<img width="250" alt="project 3" src="https://github.com/user-attachments/assets/f1854356-9949-4329-b49f-fc0fc2eee121" />
+Picture 3: Select origin ports X destinations, and carriers perferences.
+<img width="250" alt="project 4" src="https://github.com/user-attachments/assets/ed3c17c3-36d1-4d98-99ef-4ee584addfa1" />
+Picture 4: Allow both dropdown bar selection and typing match.
+<img width="250" alt="project 5" src="https://github.com/user-attachments/assets/bf2b61e3-c777-4b18-868d-9a718d1619dd" />
+Picture 5: Carriers and other selections that allow you to customize more information.
+<img width="250" alt="project 6" src="https://github.com/user-attachments/assets/8f2a12a7-f634-4456-9843-e1c170a961ed" />
+Picture 6: Final rate sheet.
 
+## Inputs and Outputs
+Input raw files under RateSheet_Project/RateSheetFiles. RateGenerator exe reads these Excel files, detects and normalizes headers, standardizes field names and values, exports cleaned Excel files into a Cleaned folder, and loads the final tables into a BigQuery dataset.
 
-## Features
+## Main Dependencies
 
-- **Upload & Parse Rate Sheets:** Easily upload Excel or CSV files containing ocean freight rates.
-- **Automated Data Cleaning:** Remove duplicates, handle missing values, identify varies headrows, head title, and their data, and standardize formats for ports, carriers, rates, and date.
-- **Fuzzy Matching:** Intelligent matching of port and carrier names using rapidfuzz.
-- **BigQuery Integration:** Store cleaned data at scale using Google BigQuery for any future analytic and visualize purpose.
-- **Interactive Dashboard:** Supports querying all rate sheets simultaneously. Visualize rates by different routes and carriers. Supports selecting different routing modes and adjusting rates for ocean and inland transportation. Supports cross-matching mode to generate all possible routes from each origin to every destination simultaneously. Supports route quantity control and keyword-based filtering or exclusion.
-- **Download Cleaned Data:** Export standardized rate sheets for further use or sharing.
+pandas: core table processing and read/write.
+rapidfuzz (or thefuzz): high-performance fuzzy matching for ports, carriers, and city names.
+openpyxl: extract computed values from Excel with formulas.
+google-cloud-bigquery / google-auth: authentication and uploading DataFrames to BigQuery.
+pytz / datetime: date parsing and timezone handling.
 
-## Technologies Used
+## Key Techniques & Algorithms
 
-- [Python 3.8+](https://www.python.org/)
-- [Streamlit](https://streamlit.io/) – Rapid web app development
-- [Google BigQuery](https://cloud.google.com/bigquery) – Scalable cloud data warehouse
-- [Pandas](https://pandas.pydata.org/) – Data cleaning and manipulation
-- [RapidFuzz](https://github.com/maxbachmann/RapidFuzz) – Fuzzy string matching
-- [Openpyxl](https://openpyxl.readthedocs.io/) – Excel file handling
+Header detection: scan the top N rows to find the real header row (e.g., searching for "POL"), enabling robust handling of varying source formats.
+Column normalization: strip whitespace/special characters, convert separators to underscores, deduplicate columns, and rename common fields to a canonical set.
+Alias dictionaries + fuzzy matching: maintain dictionaries for port aliases, carrier codes, and city keywords; prefer exact alias/code matches and fall back to fuzzy-match with a threshold (e.g., 75%) to resolve ambiguous names.
+Date standardization: handle both Excel serial dates and string dates, try multiple formats, coerce invalid values to NaT, and use filename-inferred year as a calibration heuristic when needed.
+Formula extraction: use openpyxl with data_only=True to capture computed values rather than raw formulas before exporting/uploading.
+BigQuery load: normalize file names to safe table IDs and use google-cloud-bigquery's DataFrame load API with WRITE_TRUNCATE to ensure idempotent uploads.
 
-## Getting Started
+# Running the App - Streamlit Cloud 👇
 
-> ⚠️ **Note:** This project is actively used with private data. Therefore, the service account JSON key is not included.  
-> You can freely replace the path with your own credentials and use your own Google BigQuery instance to achieve the same functionality.
-
-### Prerequisites
-
-- Python 3.8+
-- Google Cloud account with BigQuery access
-- Service account credentials (JSON)
-
-### Installation
-
-1. Clone the repository:
-   ```powershell
-   git clone <repo-url>
-   cd streamlit_launcher
-   ```
-2. Install dependencies:
-   ```powershell
-   pip install -r requirements.txt
-   ```
-3. Set up your Google Cloud credentials:
-   - Place your service account JSON in the project directory.
-   - Set the environment variable:
-     ```powershell
-     $env:GOOGLE_APPLICATION_CREDENTIALS = "path\to\your\credentials.json"
-     ```
-
-### Running the App
-
-```powershell
-streamlit run streamlit_app.py
-```
-
-## Usage
-
-1. Upload your ocean freight rate sheet (Excel/CSV).
-2. Review and clean the data using the interactive interface.
-3. Save cleaned data to BigQuery and explore analytics.
-4. Download standardized rate sheets as needed.
+https://freight-rate-sheet-generator-hgpxnwxp67ycj7d9kdwv3e.streamlit.app/
 
 ## Project Structure
 
@@ -75,7 +45,7 @@ streamlit run streamlit_app.py
 - `RateGeneratorJuly15.py` – Data cleaning and transformation scripts
 - `bigquery_utils.py` – BigQuery integration helpers
 - `requirements.txt` – Python dependencies
-- `rate-sheet-sql-465312-c347c0f5adb3.json` – Google Cloud service account credentials
+- `json` – Google Cloud service account credentials （for safty issues, json is not provided in GitHub and codes)
 
 ## Contributing
 
