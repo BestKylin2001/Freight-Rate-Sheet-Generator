@@ -2,27 +2,33 @@
 
 This project is a rate-sheet processing pipeline that consolidates multiple Excel rate sheets with inconsistent content, formats, and data types from different agents all over the world, cleans and standardizes the data, and uploads cleaned tables into Google BigQuery for downstream analysis. 
 
-<img width="250" alt="project 1" src="https://github.com/user-attachments/assets/c5d4406a-2339-4837-8e07-29fa38ccbb4d" />
+<img width="500" alt="project 1" src="https://github.com/user-attachments/assets/c5d4406a-2339-4837-8e07-29fa38ccbb4d" />
+<br>
 Picture 1: Page details.
 <br>
 
-<img width="250" alt="project 2" src="https://github.com/user-attachments/assets/a445d477-3bc8-426f-9dfa-31959540d7ab" />
+<img width="500" alt="project 2" src="https://github.com/user-attachments/assets/a445d477-3bc8-426f-9dfa-31959540d7ab" />
+<br>
 Picture 2: Select input tables to preview.
 <br>
 
-<img width="250" alt="project 3" src="https://github.com/user-attachments/assets/f1854356-9949-4329-b49f-fc0fc2eee121" />
+<img width="500" alt="project 3" src="https://github.com/user-attachments/assets/f1854356-9949-4329-b49f-fc0fc2eee121" />
+<br>
 Picture 3: Select origin ports X destinations, and carriers perferences.
 <br>
 
-<img width="250" alt="project 4" src="https://github.com/user-attachments/assets/ed3c17c3-36d1-4d98-99ef-4ee584addfa1" />
+<img width="500" alt="project 4" src="https://github.com/user-attachments/assets/ed3c17c3-36d1-4d98-99ef-4ee584addfa1" />
+<br>
 Picture 4: Allow both dropdown bar selection and typing match.
 <br>
 
-<img width="250" alt="project 5" src="https://github.com/user-attachments/assets/bf2b61e3-c777-4b18-868d-9a718d1619dd" />
+<img width="500" alt="project 5" src="https://github.com/user-attachments/assets/bf2b61e3-c777-4b18-868d-9a718d1619dd" />
+<br>
 Picture 5: Carriers and other selections that allow you to customize more information.
 <br>
 
-<img width="250" alt="project 6" src="https://github.com/user-attachments/assets/8f2a12a7-f634-4456-9843-e1c170a961ed" />
+<img width="500" alt="project 6" src="https://github.com/user-attachments/assets/8f2a12a7-f634-4456-9843-e1c170a961ed" />
+<br>
 Picture 6: Final rate sheet.
 <br>
 
