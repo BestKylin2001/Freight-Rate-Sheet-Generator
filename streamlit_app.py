@@ -17,13 +17,13 @@ from google.oauth2 import service_account
 def _get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
     try:
         value = st.secrets.get(key, default)
-        if value is not None:
-            st.write(f"Loaded secret: {key} from st.secrets")
+        # if value is not None:
+            # st.write(f"Loaded secret: {key} from st.secrets")
         return value
     except Exception as e:
-        st.write(f"Failed to load {key} from st.secrets: {e}")
+        # st.write(f"Failed to load {key} from st.secrets: {e}")
         return os.environ.get(key.upper(), default)
-
+``
 @lru_cache(maxsize=1)
 def get_gcp_config() -> Dict[str, str]:
     """Get GCP configuration from secrets or environment variables."""
@@ -121,7 +121,7 @@ if selected_table:
     st.sidebar.header("🔧 Filter Options")
     table_type = st.sidebar.radio("Table Type", ["Port to Port", "Port to Door"])
 
-# 示例数据
+# Carrier Names
 carrier_options = [
     "WANHAI", "SMLM", "YML", "MSC", "OOCL", "ONE", "EMC", "COSCO", 
     "HMM", "HPL", "CMA", "ZIM", "SLS", "TSL", "HEDE", "MATS"
@@ -182,7 +182,7 @@ if table_type == "Port to Door":
 if origin_select and destination_select and carrier_select:
     routes = list(product(origin_select, destination_select, carrier_select))
     routes = [(o.upper(), d.upper(), c.upper()) for o,d,c in routes]
-    st.markdown(f"### 🧾 共生成 {len(routes)} 条线路：")
+    st.markdown(f"### 🧾 Total {len(routes)} routes matched：")
 
     fixed_fields = {
         "ISF": 25,
@@ -226,17 +226,17 @@ if origin_select and destination_select and carrier_select:
                     m["40' or HC - ALL IN"] += (fixed_fields["Trucking Fee"] +
                                                 fixed_fields["40' - CTF/PP"] +
                                                 fixed_fields["Chassis ($50/DAY) - min. 2 days"])
-                m.loc[:, "表格类型"] = table_type
-                m.loc[:, "来源表"] = table
+                m.loc[:, "Sheet type"] = table_type
+                m.loc[:, "Source table"] = table
                 combined_data.append(m)
                 found = True
             else:
-                if origin not in df["POL"].unique(): reasons.add(f"缺POL: {origin}")
-                if destination not in df["Destination"].unique(): reasons.add(f"缺Destination: {destination}")
-                if carrier not in df["Carrier"].unique(): reasons.add(f"缺Carrier: {carrier}")
+                if origin not in df["POL"].unique(): reasons.add(f"Cannot find POL: {origin}")
+                if destination not in df["Destination"].unique(): reasons.add(f"Cannot find Destination: {destination}")
+                if carrier not in df["Carrier"].unique(): reasons.add(f"Cannot find Carrier: {carrier}")
 
         if not found:
-            print(f"❌ 未匹配: {origin} → {destination} ｜ {carrier} ｜ 原因: {'，'.join(sorted(reasons))}")
+            print(f"❌ Unmatched: {origin} → {destination} ｜ {carrier} ｜ Reason: {'，'.join(sorted(reasons))}")
 
 
     if combined_data:
@@ -259,9 +259,9 @@ if origin_select and destination_select and carrier_select:
                 else x
             )
 
-        st.sidebar.markdown("### 💲 GP20 / GP40 调整")
-        gp20_adjust = st.sidebar.number_input("调整 GP20（单位：美元，可为负数）", value=0.0, step=10.0)
-        gp40_adjust = st.sidebar.number_input("调整 GP40（单位：美元，可为负数）", value=0.0, step=10.0)
+        st.sidebar.markdown("### 💲 GP20 / GP40 Price Adjust")
+        gp20_adjust = st.sidebar.number_input("Markup/Markdown GP20（Unit：$, positive/negative）", value=0.0, step=10.0)
+        gp40_adjust = st.sidebar.number_input("Markup/Markdown GP40（Unit：$, positive/negative）", value=0.0, step=10.0)
 
         if 'GP20' in total_df.columns:
             total_df['GP20'] = total_df['GP20'] + gp20_adjust
@@ -275,14 +275,14 @@ if origin_select and destination_select and carrier_select:
 
         display_cols = door_cols if table_type == "Port to Door" else port_cols
 
-        st.markdown("### 📊 合并后的总表：")
+        st.markdown("###✅ Final Ocean Freight Rate Sheet：")
 
-        keyword = st.sidebar.text_input("请输入关键词（用于过滤remark/COMM/COMM_DETAILS）")
+        keyword = st.sidebar.text_input("Input keywords（Filter remark/COMM/COMM_DETAILS）")
         filter_action = st.sidebar.radio(
-            "选择筛选方式：",
-            ("不过滤", "只保留包含关键词的班次", "剔除包含关键词的班次")
+            "Filter options：",
+            ("Do not filter", "Keep shifts containing keywords:", "Exclude shifts containing keywords:")
         )
-        max_shown = st.sidebar.number_input("每条线路最多列出几条最便宜的班次？", min_value=1, step=1, value=5)
+        max_shown = st.sidebar.number_input("List up to how many cheapest shifts per route？", min_value=1, step=1, value=5)
 
         selected_rows = []
         col_20_all_in = "20' - ALL IN"
@@ -292,13 +292,13 @@ if origin_select and destination_select and carrier_select:
         for (pol, destination), group in grouped:
             group = group.sort_values(by="GP20", ascending=True)
 
-            if keyword and filter_action != "不过滤":
+            if keyword and filter_action != "Do not filter":
                 contains_keyword = group[['remark', 'COMM', 'COMM_DETAILS']].apply(
                     lambda x: x.astype(str).str.contains(keyword, case=False, na=False)
                 ).any(axis=1)
-                if filter_action == "只保留包含关键词的班次":
+                if filter_action == "Keep shifts containing keywords:":
                     group = group[contains_keyword]
-                elif filter_action == "剔除包含关键词的班次":
+                elif filter_action == "Exclude shifts containing keywords:":
                     group = group[~contains_keyword]
 
             if not group.empty:
@@ -307,18 +307,18 @@ if origin_select and destination_select and carrier_select:
                     carrier_group = group.groupby("Carrier")
 
                     for carrier, carrier_df in carrier_group:
-                        include = st.checkbox(f"✔ 包含 {carrier}", value=True, key=f"include_{pol}_{destination}_{carrier}")
+                        include = st.checkbox(f"✔ include {carrier}", value=True, key=f"include_{pol}_{destination}_{carrier}")
                         if include:
                             carrier_df_sorted = carrier_df.sort_values(by="GP20", ascending=True)
                             selected_idx = st.radio(
-                                f"{carrier} 班次选择",
+                                f"{carrier} Carrier options:",
                                 options=list(range(len(carrier_df_sorted))),
                                 format_func=lambda idx: (
-                                    f"20尺 {carrier_df_sorted.iloc[idx].get('GP20', '无')}美元 ｜ "
-                                    f"40尺 {carrier_df_sorted.iloc[idx].get('GP40', '无')}美元 ｜ "
-                                    f"备注: {carrier_df_sorted.iloc[idx].get('remark', '无')} ｜ "
-                                    f"COMM: {carrier_df_sorted.iloc[idx].get('COMM', '无')} ｜ "
-                                    f"COMM_DETAILS: {carrier_df_sorted.iloc[idx].get('COMM_DETAILS', '无')}"
+                                    f"20' {carrier_df_sorted.iloc[idx].get('GP20', 'Null')}$ ｜ "
+                                    f"40' {carrier_df_sorted.iloc[idx].get('GP40', 'Null')}$ ｜ "
+                                    f"Remark: {carrier_df_sorted.iloc[idx].get('remark', 'Null')} ｜ "
+                                    f"COMM: {carrier_df_sorted.iloc[idx].get('COMM', 'Null')} ｜ "
+                                    f"COMM_DETAILS: {carrier_df_sorted.iloc[idx].get('COMM_DETAILS', 'Null')}"
                                 ),
                                 key=f"{pol}_{destination}_{carrier}"
                             )
@@ -341,9 +341,8 @@ if origin_select and destination_select and carrier_select:
                 "ORIGIN", "DESTINATION", "Carrier", "Transit time (port to port)", "20'", "40' or HC", "ISF", "Handling", "Customs Clearance", "Duty", "Trucking Fee", "20' - CTF/PP", "40' - CTF/PP", "Chassis ($50/DAY) - min. 2 days", "20' - ALL IN", "40' or HC - ALL IN", "COMM", "COMM_DETAILS", "Expiring_Date", "来源表"
             ]
 
-        st.markdown("### ✅ 最终选择的班次列表：")
+        st.markdown("### ✅ Final Ocean Freight Rate Sheet：")
         st.dataframe(final_selected_df)
 
         csv = final_selected_df.to_csv(index=False).encode("utf-8-sig")
-        st.download_button("📥 下载最终选择后的总表 CSV", csv, "final_selected_routes.csv", "text/csv")
-
+        st.download_button("📥 Download final CSV", csv, "final_selected_routes.csv", "text/csv")
