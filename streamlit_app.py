@@ -16,12 +16,8 @@ from google.oauth2 import service_account
 
 def _get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
     try:
-        value = st.secrets.get(key, default)
-        # if value is not None:
-            # st.write(f"Loaded secret: {key} from st.secrets")
-        return value
-    except Exception as e:
-        # st.write(f"Failed to load {key} from st.secrets: {e}")
+        return st.secrets.get(key, default)
+    except Exception:
         return os.environ.get(key.upper(), default)
 
 @lru_cache(maxsize=1)
@@ -128,7 +124,7 @@ carrier_options = [
 ]
 
 origin_ports = [
-    'SHENZHEN, GUANGDONG', 'JIUJIANG, GUANGDONG', 'HONG KONG', 'ZHUHAI, GUANGDONG', 
+    'SHENZHEN', 'JIUJIANG, GUANGDONG', 'HONG KONG', 'ZHUHAI, GUANGDONG', 
     'SHANGHAI', 'HUANGPU, GUANGDONG', 'XIAMEN, FUJIAN', 'FUZHOU, FUJIAN', 'ZHENJIANG, JIANGSU', 'ZHAPU, ZHEJIANG', 
     'ZHANGJIAGANG, JIANGSU', 'YUEYANG, HUNAN', 'YICHANG, HUBEI', 'YANGZHOU, JIANGSU', 'WUHAN, HUBEI', 'NINGBO, ZHEJIANG', 
     'NANTONG, JIANGSU', 'NANJING, JIANGSU', 'NANCHANG, JIANGXI', 'CHANGZHOU, JIANGSU', 'ANQING, ANHUI', 'XINGANG, TIANJIN', 
