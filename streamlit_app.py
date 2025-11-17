@@ -23,7 +23,7 @@ def _get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
     except Exception as e:
         # st.write(f"Failed to load {key} from st.secrets: {e}")
         return os.environ.get(key.upper(), default)
-``
+
 @lru_cache(maxsize=1)
 def get_gcp_config() -> Dict[str, str]:
     """Get GCP configuration from secrets or environment variables."""
